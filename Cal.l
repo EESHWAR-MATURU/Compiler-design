@@ -1,22 +1,26 @@
 %{
+/* Definition section */
+#include<stdio.h>
 #include "y.tab.h"
+extern int yylval;
 %}
 
+/* Rule Section */
+%%
+[0-9]+ {
+   	 yylval=atoi(yytext);
+   	 return NUMBER;
+
+    }
+[\t] ;
+
+[\n] return 0;
+
+. return yytext[0];
+
 %%
 
-"+"     { return PLUS; }
-"-"     { return MINUS; }
-"*"     { return MULTIPLY; }
-"/"     { return DIVIDE; }
-"("     { return LPAREN; }
-")"     { return RPAREN; }
-[0-9]+  { yylval.num = atoi(yytext); return NUMBER; }
-[a-zA-Z]+ { yylval.id = yytext[0]; return IDENTIFIER; }
-[ \t\n]  ; /* skip whitespace */
-.       { return yytext[0]; } /* return any other character as is */
-
-%%
-
-int yywrap() {
-    return 1;
+int yywrap()
+{
+return 1;
 }

@@ -1,21 +1,21 @@
 %{
-#include "y.tab.h"
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include "y.tab.h"
 %}
 
-%%
-
-"+"     { return PLUS; }
-"-"     { return MINUS; }
-"*"     { return MULTIPLY; }
-"/"     { return DIVIDE; }
-"("     { return LPAREN; }
-")"     { return RPAREN; }
-[a-zA-Z]+ { yylval.id = yytext[0]; return IDENTIFIER; }
-[ \t\n]  ; /* skip whitespace */
-.       { return yytext[0]; } /* return any other character as is */
+OPERATORS  [+-/*]
+NUMBER	[0-9]+
 
 %%
 
-int yywrap() {
-    return 1;
-}
+exit.*  	{ return EXIT; }
+quit.*  	{ return EXIT; }
+{NUMBER}	{ yylval = atoi(yytext);  return NUMBER;}
+{OPERATORS} { return yytext[0]; }
+[()]    	{ return yytext[0]; }
+\n      	{ return NEWLINE; }
+.       	;
+
+%%

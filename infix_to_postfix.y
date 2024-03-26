@@ -1,36 +1,53 @@
 %{
+
 #include <stdio.h>
 #include <stdlib.h>
+
+
+extern int yylex();
+int yyerror(const char *p) { printf("%s encountered\n",p); return 1; }
+
+int first = 1;
 %}
 
-%token IDENTIFIER
-%token PLUS MINUS MULTIPLY DIVIDE LPAREN RPAREN
+%token NUMBER NEWLINE EXIT
+%left '+' '-'
+%left '*' '/'
+
+%start lines
 
 %%
 
-expression : expression PLUS term      { printf("%c ", $1); printf("%c ", $3); printf("+ "); }
-           | expression MINUS term     { printf("%c ", $1); printf("%c ", $3); printf("- "); }
-           | term                     { printf("%c ", $1); }
-           ;
+lines: /*empty*/
+ 	| lines exp NEWLINE { printf("\n>> "); first=1; }
+ 	;
 
-term       : term MULTIPLY factor     { printf("%c ", $1); printf("%c ", $3); printf("* "); }
-           | term DIVIDE factor       { printf("%c ", $1); printf("%c ", $3); printf("/ "); }
-           | factor                   { printf("%c ", $1); }
-           ;
-
-factor     : IDENTIFIER               { printf("%c ", $1); }
-           | LPAREN expression RPAREN { printf("( "); printf("%c ", $2); printf(") "); }
-           ;
+exp: exp '+' exp { printf("%c ",'+'); }
+   | exp '-' exp { printf("%c ",'-'); }
+   | exp '/' exp { printf("%c ",'/'); }
+   | exp '*' exp { printf("%c ",'*'); }
+   | '(' exp ')' {  }
+   | NUMBER {  
+            	if(first)
+            	{
+                	first = 0;
+                	printf("(Postfix) ");
+            	}
+            	printf("%d ",$1); }
+   | EXIT { exit(0); }
+   ;
 
 %%
 
-int main() {
-    yyparse();
-    printf("\n");
-    return 0;
+int yywrap()
+{
+
+	return 1;
 }
 
-void yyerror(char *s) {
-    printf("Error: %s\n", s);
-    exit(1);
+int main()
+{
+	printf("Reserved keywords: exit, quit\n");
+	printf(">> ");
+	yyparse();
 }
