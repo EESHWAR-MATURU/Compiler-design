@@ -1,0 +1,15 @@
+for yacc
+
+yacc -d <file_name>.y 
+flex <file_name>.l
+gcc lex.yy.c <file_name>.tab.c -w
+.\a.exe
+
+
+
+for lex
+
+flex <file_name>.l
+gcc lex.yy.c 
+.\a.exe
+

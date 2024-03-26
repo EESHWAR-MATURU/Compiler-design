@@ -1,7 +1,7 @@
 %{
 /* Definition section */
 #include<stdio.h>
-#include "y.tab.h"
+#include "Cal.tab.h"
 extern int yylval;
 %}
 
